@@ -7,6 +7,7 @@ import com.zict.tooltrail.data.database.ToolTrailDatabase
 import com.zict.tooltrail.data.entity.BorrowingEntity
 import com.zict.tooltrail.data.entity.EquipmentEntity
 import com.zict.tooltrail.data.repository.ToolTrailRepository
+import com.zict.tooltrail.notifications.ReminderScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -75,7 +76,13 @@ class ToolTrailViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             try {
                 val due = System.currentTimeMillis() + (hoursUntilDue * 3_600_000).toLong()
-                repository.borrowEquipment(equipmentId, borrowerName, borrowerContact, due)
+                val borrowingId =
+                    repository.borrowEquipment(equipmentId, borrowerName, borrowerContact, due)
+
+                val equipmentName = repository.getEquipmentById(equipmentId)?.name ?: "Equipment"
+                ReminderScheduler.schedule(
+                    getApplication(), borrowingId, equipmentName, borrowerName.trim(), due
+                )
                 onSuccess()
             } catch (e: IllegalArgumentException) {
                 _message.value = e.message
@@ -87,6 +94,7 @@ class ToolTrailViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             try {
                 repository.returnEquipment(borrowingId)
+                ReminderScheduler.cancel(getApplication(), borrowingId)
             } catch (e: IllegalArgumentException) {
                 _message.value = e.message
             }
