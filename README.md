@@ -1,6 +1,6 @@
 # ToolTrail
 
-**ToolTrail — Shared Equipment Borrowing and Return Tracker**
+**ToolTrail  Shared Equipment Borrowing and Return Tracker**
 
 BSE 3340 Mobile Application Development  
 Zambia University College of Technology
