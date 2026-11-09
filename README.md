@@ -103,21 +103,10 @@ The reminder fires when the loan becomes due. There is no earlier warning.
 If notification permission is denied, the app works normally but shows no reminders and no message about it.
 The database is version 1 with no migrations. Changing a table needs a new database version.
 12. Team
-Member
-Student number
-Role
-Innocent Kabwe
-2410109
-Technical lead: setup, navigation and integration
-Joshua Mazaza
-2410123
-Coordination, code review and quality assurance
-Gabriel Mwila
-2410234
-Equipment management
-Ndame Sepete
-2410559
-Borrowing and loan management
-Moses Phiri
-2410103
-Database and reminders
+| Member | Student Number | Role |
+|---|---|---|
+| Innocent Kabwe | 2410109 | Technical lead: setup, navigation and integration |
+| Joshua Mazaza | 2410123 | Coordination, code review and quality assurance |
+| Gabriel Mwila | 2410234 | Equipment management |
+| Ndame Sepete | 2410559 | Borrowing and loan management |
+| Moses Phiri | 2410103 | Database and reminders |
