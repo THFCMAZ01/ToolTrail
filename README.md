@@ -6,7 +6,7 @@ BSE 3340 Mobile Application Development
 Zambia University College of Technology
 
 - **Repository:** https://github.com/THFCMAZ01/ToolTrail
-- **Demo video:** To be added after uploading the YouTube video as Unlisted.
+- **Demo video:** [Watch the ToolTrail demonstration on YouTube](https://youtube.com/shorts/ydvuCNZTX4g?feature=share) (please ensure the video visibility is set to Unlisted).
 
 ## 1. The problem
 
