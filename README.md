@@ -103,6 +103,7 @@ The reminder fires when the loan becomes due. There is no earlier warning.
 If notification permission is denied, the app works normally but shows no reminders and no message about it.
 The database is version 1 with no migrations. Changing a table needs a new database version.
 12. Team
+
 | Member | Student Number | Role |
 |---|---|---|
 | Innocent Kabwe | 2410109 | Technical lead: setup, navigation and integration |
