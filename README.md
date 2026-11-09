@@ -1,113 +1,226 @@
 # ToolTrail
-ToolTrail - Shared Equipment Borrowing and Return Tracker
-BSE 3340 Mobile Application Development, Zambia University College of Technology
-Repository: https://github.com/THFCMAZ01/ToolTrail
-Demo video (YouTube, Unlisted): [add link after upload]
-1. The problem
-Small organisations such as student clubs, churches, community groups and workshops often lend out shared equipment. Without a simple record it is hard to know who borrowed an item, when it is due back, and which items have not been returned. This leads to lost equipment, delays and misunderstandings.
-2. Who it is for
-The person who looks after shared equipment in a small organisation and needs a simple offline record of what is out, who has it and when it is due.
-3. What the app does
-Register equipment (name, category, description, condition)
-Show all equipment, sorted by name, with its status: Available or On loan
-Record who borrowed an item, their contact and when it is due back
-Prevent the same item being lent to two people at once
-Show active loans, soonest due first, with an OVERDUE label when the due time has passed
-Mark an item as returned
-Keep a history of completed loans
-Show dashboard totals: total equipment, available, active loans, overdue
-Send a notification when a loan becomes due
-The app works fully offline. All records are stored on the device.
-4. Screens
-Screen
-What it does
-Dashboard
-Four counters: total equipment, available, active loans, overdue. Shows a hint when there is no equipment yet.
-Equipment
-Scrollable list. Each card shows name, category, condition, description and status, with a Borrow button (disabled while on loan). A + button opens the Add screen.
-Add equipment
-Form with validation: name and category are required.
-Borrow equipment
-Form with validation: borrower name, contact and hours until return are required. Hours must be a number greater than 0.
-Loans
-Active loans with borrower, contact, due date, an OVERDUE label and a Mark returned button.
-History
-Completed loans with borrowed and returned times.
-Equipment details are shown on the Equipment list cards. There is no separate details screen.
-Navigation and back button: the Dashboard, Equipment, Loans and History screens are reached from the bottom bar. Back from Add equipment or Borrow equipment returns to the Equipment list. Back from the other tabs returns to the Dashboard.
-Empty states: the Equipment, Loans and History screens each show a message when they have no data.
-5. Project structure
+
+**ToolTrail — Shared Equipment Borrowing and Return Tracker**
+
+BSE 3340 Mobile Application Development  
+Zambia University College of Technology
+
+- **Repository:** https://github.com/THFCMAZ01/ToolTrail
+- **Demo video:** To be added after uploading the YouTube video as Unlisted.
+
+## 1. The problem
+
+Small organisations such as student clubs, churches, community groups and workshops often lend out shared equipment. Without a simple record, it is difficult to know who borrowed an item, when it is due back, and which items have not been returned. This can lead to lost equipment, delays and misunderstandings.
+
+## 2. Who it is for
+
+ToolTrail is for the person responsible for shared equipment in a small organisation who needs a simple, offline record of what is available, what is currently borrowed, who has each item, and when it is due back.
+
+## 3. What the app does
+
+- Register equipment with its name, category, description and condition.
+- Display all equipment in name order, showing whether each item is **Available** or **On loan**.
+- Record the borrower's name and contact details, together with the due date and time.
+- Prevent the same item from being lent to two people at once.
+- Display active loans in due-date order and label overdue loans.
+- Record when an item is returned.
+- Keep a history of completed loans.
+- Display dashboard totals for total equipment, available items, active loans and overdue loans.
+- Schedule a notification when a loan becomes due.
+
+The app works offline. Equipment and borrowing records are stored locally on the device.
+
+## 4. Screens
+
+| Screen | What it does |
+|---|---|
+| **Dashboard** | Displays four totals: total equipment, available items, active loans and overdue loans. Shows a hint when no equipment has been registered. |
+| **Equipment** | Shows a scrollable list of equipment. Each card displays the name, category, condition, description and availability status. The Borrow button is disabled while an item is on loan. A + button opens the Add equipment form. |
+| **Add equipment** | Provides a form for registering equipment. The name and category are required. |
+| **Borrow equipment** | Provides a form for entering the borrower's name, contact and number of hours until the item is due. The hours must be a number greater than zero. |
+| **Loans** | Displays active loans, borrower details, due dates, overdue labels and a Mark returned action. |
+| **History** | Displays completed loans with their borrowing and return times. |
+
+Equipment details are displayed on the Equipment list cards; there is no separate equipment-details screen.
+
+**Navigation and back behaviour:** The Dashboard, Equipment, Loans and History screens are accessible from the bottom navigation bar. Back from Add equipment or Borrow equipment returns to the Equipment list. Back from the other main tabs returns to the Dashboard.
+
+**Empty states:** Equipment, Loans and History each display a message when there is no data to show.
+
+## 5. Project structure
+
+```text
 app/src/main/java/com/zict/tooltrail/
-  MainActivity.kt                 entry point, asks for notification permission
-  data/entity/                    EquipmentEntity, BorrowingEntity (table definitions)
-  data/dao/                       EquipmentDao, BorrowingDao (database queries)
-  data/database/                  ToolTrailDatabase (the Room database)
-  data/repository/                ToolTrailRepository (validation and business rules)
-  ui/                             ToolTrailViewModel, ToolTrailApp (screens)
-  notifications/                  ReminderWorker, ReminderScheduler
-How the layers connect: screens (ToolTrailApp) read state from the ViewModel. The ViewModel calls the repository. The repository checks the rules and calls the DAOs. The DAOs run queries on the Room database. Screens never touch the database directly.
-Data model:
-equipment table: id, name, category, description, condition, dateAdded
-borrowings table: id, equipmentId (foreign key to equipment), borrowerName, borrowerContact, borrowedAt, dueDate, returnedAt
-returnedAt is null while the item is out. When the item is returned it is filled with the return time. This lets the app tell active loans from history without deleting any records.
-The foreign key uses RESTRICT, so equipment that has loan records cannot be deleted.
-6. Lifecycle, validation and saving data
-Rotation and leaving the app. The ViewModel keeps the screen state and survives rotation. The current screen, the selected item and text typed into forms are kept with rememberSaveable. Flows from Room are collected with collectAsStateWithLifecycle, so collection pauses when the app is in the background.
-Saving data. Every record is stored in a Room (SQLite) database named tooltrail_database, so it remains after the app is closed. Note that uninstalling or reinstalling the app clears it.
-Validation. Forms show an error under the field when it is empty or invalid. The repository checks the same rules again (blank name, category, borrower or contact, due date not in the future, item not found, item already borrowed, loan already returned) and any error is shown in a Snackbar message.
-7. Technology
-Kotlin, Jetpack Compose with Material 3, Room (with KSP), Kotlin Coroutines and Flow, ViewModel, WorkManager. Minimum SDK 24, target and compile SDK 37, package com.zict.tooltrail.
-8. How to build and run
-Install a recent version of Android Studio with the Android SDK Platform 37.
-Clone the repository: git clone https://github.com/THFCMAZ01/ToolTrail.git
-Open the cloned folder in Android Studio and wait for the Gradle sync to finish.
-Choose an emulator or a phone with USB debugging (Android 7.0 / API 24 or higher) and press Run.
-On Android 13 or higher, tap Allow when the app asks to send notifications.
-Command line (Windows): .\gradlew.bat --no-configuration-cache :app:assembleDebug
-The build prints a warning that android.disallowKotlinSourceSets is experimental and a message that Kotlin does not support JDK 25 and falls back to JVM 24. Both are expected and the build still succeeds.
-Quick demo of a reminder: borrow an item with 0.02 hours (about one minute), press Home, and wait one to two minutes.
-9. Research Note
-Concept 1: Room database (owner: Moses Phiri)
-What it is. Room is an Android library that sits on top of SQLite. We describe tables as Kotlin classes (entities), write queries as interface methods (DAOs), and Room generates the database code at build time. In ToolTrail the entities are EquipmentEntity and BorrowingEntity, the DAOs are EquipmentDao and BorrowingDao, and ToolTrailDatabase ties them together as one shared instance.
-Why ToolTrail needs it. Equipment and loan records must survive closing the app, and the screens must update when data changes. Room queries return Kotlin Flow, so the lists on screen refresh automatically after an insert or an update.
-Where we learned it. The Android Developers documentation on Room (developer.android.com/training/data-storage/room), and Claude as an AI tutor and code assistant.
-What went wrong.
-The KSP plugin conflicted with the Android Gradle Plugin's built-in Kotlin support. The build only worked after adding android.disallowKotlinSourceSets=false to gradle.properties. The build still prints a warning that this option is experimental.
-While writing the return feature we found that BorrowingDao had no query to fetch one loan by its ID, so we added getBorrowingById.
-After reinstalling the app on the phone, all data was gone, because a fresh install creates a new empty database.
-Concept 2: Notifications and WorkManager (owner: Moses Phiri)
-What it is. WorkManager schedules background work that still runs if the app is closed or the phone restarts. A notification is how the app tells the user something while it is not on screen.
-Why ToolTrail needs it. A borrower should be reminded when equipment is due. When a loan is created, the ViewModel asks ReminderScheduler to queue a one-time job with a delay equal to the time until the due date. When the item is returned, the job is cancelled. When the job runs, ReminderWorker checks the database, and posts a notification only if the loan has not been returned.
-Where we learned it. The Android Developers documentation on WorkManager (developer.android.com/develop/background-work/background-tasks/persistent/getting-started) and on notifications (developer.android.com/develop/ui/views/notifications), and Claude as an AI tutor and code assistant.
-What went wrong.
-From Android 13 an app must have the notification permission. During testing no notification appeared until the permission was granted on the phone.
-The first build did not show the permission prompt because the old version of MainActivity was still installed; the prompt appeared after reinstalling the new build.
-WorkManager does not fire at the exact second, so the notification appears a short time after the due time.
-AI tools used
-We used Claude as a tutor and code assistant for explanations and code. We checked each step by building and testing on a real Samsung phone.
-10. Testing
-We tested on a real Samsung phone (Android API 37) after a fresh install. All of these passed:
-Saving the Add equipment form with blank fields shows the required-field errors.
-A new item appears in the list as Available.
-Borrowing an item moves the app to the Loans screen with the loan listed.
-The item shows On loan with Borrow disabled, and the Dashboard counts update.
-Mark returned removes the loan from Loans and adds it to History, and the item is Available again.
-Text typed in a form survives rotating the phone.
-Data is still there after swiping the app away and reopening it.
-Returning an item before it is due cancels its reminder, so no notification appears.
-A reminder notification appears after a short loan (0.02 hours) has passed.
-11. Known limitations
-There is no separate equipment details screen. Details are shown on the list cards.
-The return time is entered as hours from now. It is shown as a date and time in the app.
-The reminder fires when the loan becomes due. There is no earlier warning.
-If notification permission is denied, the app works normally but shows no reminders and no message about it.
-The database is version 1 with no migrations. Changing a table needs a new database version.
-12. Team
+├── MainActivity.kt                 # Entry point and notification permission request
+├── data/
+│   ├── entity/                     # EquipmentEntity, BorrowingEntity
+│   ├── dao/                        # EquipmentDao, BorrowingDao
+│   ├── database/                   # ToolTrailDatabase
+│   └── repository/                 # ToolTrailRepository
+├── ui/
+│   ├── ToolTrailViewModel          # UI state and application actions
+│   └── ToolTrailApp                # Compose screens and navigation
+└── notifications/
+    ├── ReminderWorker              # Background reminder work
+    └── ReminderScheduler           # Schedules and cancels reminders
+```
+
+**How the layers connect:** The screens in ToolTrailApp observe state from the ViewModel. The ViewModel calls the repository, which applies validation and business rules before using the DAOs. The DAOs execute queries against the Room database. The screens do not access the database directly.
+
+### Data model
+
+**equipment table**
+
+- `id`
+- `name`
+- `category`
+- `description`
+- `condition`
+- `dateAdded`
+
+**borrowings table**
+
+- `id`
+- `equipmentId` (foreign key to equipment)
+- `borrowerName`
+- `borrowerContact`
+- `borrowedAt`
+- `dueDate`
+- `returnedAt`
+
+The `returnedAt` field is null while an item is still borrowed. When the item is returned, the field is set to the return time. This allows the app to distinguish active loans from completed loans without deleting borrowing records.
+
+The foreign key uses **RESTRICT**, preventing equipment with borrowing records from being deleted.
+
+## 6. Lifecycle, validation and data persistence
+
+### Rotation and leaving the app
+
+The ViewModel holds screen state and survives configuration changes such as device rotation. The current screen, selected item and text entered into forms are saved with `rememberSaveable`. Room Flows are collected with `collectAsStateWithLifecycle`, so collection follows the Activity lifecycle and pauses when the app is not in the foreground.
+
+### Saving data
+
+Records are stored in a Room (SQLite) database named `tooltrail_database`. Data remains available after the app is closed or swiped away. Uninstalling the app removes its local database; reinstalling creates a new empty database.
+
+### Validation
+
+The forms display field-level errors when required information is missing or invalid. The repository also checks the business rules before saving, including:
+
+- Blank equipment name or category.
+- Blank borrower name or contact.
+- A due date that is not in the future.
+- An equipment item that does not exist.
+- An item that is already borrowed.
+- A loan that has already been returned.
+
+Repository errors are displayed to the user through a Snackbar.
+
+## 7. Technology
+
+- Kotlin
+- Jetpack Compose and Material 3
+- Room database with KSP
+- Kotlin Coroutines and Flow
+- ViewModel
+- WorkManager
+- Minimum SDK: 24
+- Compile SDK: 37
+- Target SDK: 37
+- Package: `com.zict.tooltrail`
+
+## 8. How to build and run
+
+1. Install a recent version of Android Studio with Android SDK Platform 37.
+2. Clone the repository:
+
+   ```bash
+   git clone https://github.com/THFCMAZ01/ToolTrail.git
+   ```
+
+3. Open the cloned project folder in Android Studio.
+4. Wait for Gradle sync to finish.
+5. Select an Android emulator or connect a phone with USB debugging enabled. The device must run Android 7.0 (API 24) or higher.
+6. Press **Run** in Android Studio.
+7. On Android 13 or higher, allow the app to send notifications when prompted.
+
+**Build from the command line (Windows PowerShell):**
+
+```powershell
+.\gradlew.bat --no-configuration-cache :app:assembleDebug
+```
+
+The current build may display an experimental-option warning for `android.disallowKotlinSourceSets` and a message that Kotlin falls back to JVM 24 when the build uses JDK 25. These messages appeared during development; the project build completed successfully in that environment.
+
+**Quick reminder demonstration:** Create a loan with a due time of 0.02 hours (approximately 1.2 minutes), press Home, and wait one to two minutes. WorkManager is not guaranteed to run at the exact due second, so allow a little extra time.
+
+## 9. Research Note
+
+### Concept 1: Room database
+
+**Owner:** Moses Phiri
+
+**What it is:** Room is an Android persistence library built on top of SQLite. Developers define database tables using Kotlin entity classes and describe database operations using Data Access Objects (DAOs). Room generates the database implementation during the build.
+
+In ToolTrail, `EquipmentEntity` and `BorrowingEntity` define the tables, `EquipmentDao` and `BorrowingDao` define database operations, and `ToolTrailDatabase` provides access to the database.
+
+**Why ToolTrail needs it:** Equipment and borrowing records must remain available after the app is closed. The app also needs its lists and dashboard to reflect changes to stored records. Room queries can return Kotlin Flows, allowing the UI to observe database changes and update when records are inserted or modified.
+
+**Where we learned it:** The official Android Developers documentation on [Room](https://developer.android.com/training/data-storage/room), with Claude used as an AI tutor and code assistant.
+
+**What went wrong and how we addressed it:**
+
+- The KSP plugin initially conflicted with the Android Gradle Plugin's built-in Kotlin support. The build worked after adding `android.disallowKotlinSourceSets=false` to `gradle.properties`. This setting is experimental and the build continues to display a warning about it.
+- While implementing the return feature, we found that BorrowingDao did not have a query to retrieve a borrowing record by its ID. We added `getBorrowingById` to support that operation.
+- After uninstalling and reinstalling the app on the test phone, the stored records were no longer present. This helped us understand that the Room database is local app data and is removed when the app is uninstalled.
+
+### Concept 2: Notifications and WorkManager
+
+**Owner:** Moses Phiri
+
+**What it is:** WorkManager is an Android library for scheduling deferrable background work that should remain scheduled across app restarts and device reboots. Notifications allow an app to present information to the user when the app is not in the foreground.
+
+**Why ToolTrail needs it:** A person responsible for shared equipment needs to know when a borrowed item becomes due. When a loan is created, the ViewModel asks ReminderScheduler to enqueue a one-time task with a delay based on the due time. When an item is returned, its scheduled reminder is cancelled. When ReminderWorker runs, it checks the database and posts a notification only if the loan has not already been returned.
+
+**Where we learned it:** The official Android Developers documentation on [WorkManager](https://developer.android.com/develop/background-work/background-tasks/persistent/getting-started) and [notifications](https://developer.android.com/develop/ui/views/notifications), with Claude used as an AI tutor and code assistant.
+
+**What went wrong and how we addressed it:**
+
+- On Android 13 and later, apps need notification permission before they can post notifications. During testing, reminders did not appear until permission was granted on the phone.
+- The notification permission prompt did not appear during the first test because the older app version was still installed. After installing the updated build, the prompt appeared.
+- WorkManager does not guarantee execution at the exact second a task becomes due. The reminder can therefore appear shortly after the due time rather than precisely at that moment.
+
+## 10. Testing
+
+The team tested the app on a real Samsung phone running Android API 37 after a fresh installation. The following checks passed:
+
+- Submitting the Add equipment form with blank required fields displays validation errors.
+- A newly registered item appears in the Equipment list as Available.
+- Borrowing an item moves the app to the Loans screen and displays the new loan.
+- A borrowed item displays On loan, its Borrow button is disabled, and the Dashboard totals update.
+- Marking an item as returned removes the loan from Loans, adds it to History and makes the equipment Available again.
+- Text entered into a form survives rotating the phone.
+- Stored data remains available after swiping the app away and reopening it.
+- Returning an item before its due time cancels its reminder, so no due notification is posted.
+- A reminder notification appears after a short loan of 0.02 hours has passed.
+
+## 11. Known limitations
+
+- There is no separate equipment-details screen; equipment information is displayed on the list cards.
+- The return time is entered as a number of hours from the current time and displayed as a date and time.
+- The reminder is scheduled for when the loan becomes due; there is no earlier warning.
+- If notification permission is denied, the app continues to work, but reminders are not displayed and the app does not show a separate explanation.
+- The database is currently at version 1 and has no migration paths. Future changes to the database schema will require a version update and appropriate migrations.
+
+## 12. Team
 
 | Member | Student Number | Role |
-|---|---|---|
+|---|---:|---|
 | Innocent Kabwe | 2410109 | Technical lead: setup, navigation and integration |
 | Joshua Mazaza | 2410123 | Coordination, code review and quality assurance |
 | Gabriel Mwila | 2410234 | Equipment management |
 | Ndame Sepete | 2410559 | Borrowing and loan management |
 | Moses Phiri | 2410103 | Database and reminders |
+
+## AI tools used
+
+The team used Claude as a tutor and code assistant for explanations and implementation support. We checked the work by building the project and testing the application on a real Samsung phone.
