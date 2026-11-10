@@ -153,6 +153,20 @@ The current build may display an experimental-option warning for `android.disall
 
 **Quick reminder demonstration:** Create a loan with a due time of 0.02 hours (approximately 1.2 minutes), press Home, and wait one to two minutes. WorkManager is not guaranteed to run at the exact due second, so allow a little extra time.
 
+### Install the prebuilt APK without Android Studio
+
+A debug APK can be built by GitHub Actions, so you do not need a computer with Android Studio to download and install the app.
+
+1. Open the repository: https://github.com/THFCMAZ01/ToolTrail
+2. Select the **Actions** tab.
+3. Under **Build ToolTrail APK**, open the latest successful run (look for a green check mark).
+4. On that run's **Summary** page, scroll down to **Artifacts**.
+5. Select **ToolTrail-debug-APK** to download it. GitHub downloads the artifact as a ZIP file.
+6. Extract the ZIP file on your computer or phone. Inside it, find **app-debug.apk**.
+7. Open **app-debug.apk** on your Android phone and follow the installation prompts. If Android asks, allow your browser or file manager to install unknown apps.
+
+The app supports Android 7.0 (API 24) and later. The APK is stored as a GitHub Actions artifact, not as a source file in the repository. Artifacts are temporary and are retained for 14 days, so download the APK before the retention period expires. A new workflow run creates a new artifact.
+
 ## 9. Research Note
 
 ### Concept 1: Room database
