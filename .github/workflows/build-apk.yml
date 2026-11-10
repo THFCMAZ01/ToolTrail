@@ -27,7 +27,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4.0.4
         with:
-          packages: 'platforms;android-37'
+          packages: 'platforms;android-37.0'
 
       - name: Build debug APK
         run: |
